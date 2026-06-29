@@ -1,4 +1,4 @@
-# Unitwist — UK converters with a twist
+# ConvertUk — UK converters with a twist
 
 A config-driven collection of niche UK converters — the calculations a search
 box can't answer inline (real after-tax hourly pay, cups-to-grams by ingredient,
