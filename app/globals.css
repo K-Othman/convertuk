@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  /* Quiet, cool background with a faint grid — the page is calm so the
+     dark results "display" can be the one thing that pops. */
+  background-color: theme("colors.paper");
+  background-image:
+    linear-gradient(theme("colors.slate.200 / 35%") 1px, transparent 1px),
+    linear-gradient(90deg, theme("colors.slate.200 / 35%") 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center top;
+  color: theme("colors.slate.900");
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  /* Visible, branded keyboard focus everywhere. */
+  :focus-visible {
+    outline: 2px solid theme("colors.accent.DEFAULT");
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Tabular figures stop numbers from reflowing as they change. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
