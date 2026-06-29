@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import localFont from "next/font/local";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
@@ -108,6 +109,9 @@ export default function RootLayout({
             </p>
           </div>
         </footer>
+
+        {/* GA4 — only loads in production-style builds; safe to leave in for now. */}
+        <GoogleAnalytics gaId="G-ZNLHNVTTS7" />
       </body>
     </html>
   );
