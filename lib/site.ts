@@ -7,10 +7,10 @@
  *
  * No trailing slash (helpers below add the slash where needed).
  */
-export const SITE_URL = "https://placeholder.example.com";
+export const SITE_URL = "https://convertuk.co.uk";
 
 /** Human-readable brand name, reused in metadata and the UI. */
-export const SITE_NAME = "Unitwist";
+export const SITE_NAME = "ConvertUK";
 
 /** Short tagline used in default metadata and the header. */
 export const SITE_TAGLINE = "UK converters with a twist";
