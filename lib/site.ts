@@ -7,7 +7,7 @@
  *
  * No trailing slash (helpers below add the slash where needed).
  */
-export const SITE_URL = "https://convertuk.co.uk";
+export const SITE_URL = "https://www.convertuk.co.uk";
 
 /** Human-readable brand name, reused in metadata and the UI. */
 export const SITE_NAME = "ConvertUK";
