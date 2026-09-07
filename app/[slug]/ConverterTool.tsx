@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
+import { inputErrors } from "@/lib/validation";
 import {
   getConverter,
   type InputField,
@@ -27,12 +29,22 @@ export default function ConverterTool({ slug }: { slug: string }) {
     ),
   );
 
+  const trackedUse = useRef(false);
   if (!converter) return null;
 
-  const update = (name: string, value: string) =>
-    setValues((prev) => ({ ...prev, [name]: value }));
-
-  const results = converter.convert(values);
+  const update = (name: string, value: string) => {
+    const next = { ...values, [name]: value };
+    setValues(next);
+    // One interaction per mounted tool. Never transmit the entered values.
+    if (!trackedUse.current && Object.keys(inputErrors(converter.inputs, next)).length === 0) {
+      trackedUse.current = true;
+      if (window.location.hostname === "www.convertuk.co.uk") {
+        sendGAEvent("event", "calculator_use", { calculator_slug: slug });
+      }
+    }
+  };
+  const errors = inputErrors(converter.inputs, values);
+  const results = Object.keys(errors).length === 0 ? converter.convert(values) : null;
 
   return (
     <div className="grid gap-5 md:grid-cols-[1fr_1.1fr] md:items-start">
@@ -47,6 +59,7 @@ export default function ConverterTool({ slug }: { slug: string }) {
             <Field
               key={field.name}
               field={field}
+              error={errors[field.name]}
               value={values[field.name] ?? ""}
               onChange={(v) => update(field.name, v)}
             />
@@ -55,7 +68,7 @@ export default function ConverterTool({ slug }: { slug: string }) {
       </form>
 
       {/* Results — the dark "display", the page's signature element. */}
-      <ResultsDisplay results={results} />
+      {results ? <ResultsDisplay results={results} /> : <p role="status" className="rounded-2xl border border-slate-200 bg-white p-6 text-slate-700">Check the highlighted inputs to see your result.</p>}
     </div>
   );
 }
@@ -65,12 +78,16 @@ function Field({
   field,
   value,
   onChange,
+  error,
 }: {
   field: InputField;
+  error?: string;
   value: string;
   onChange: (value: string) => void;
 }) {
   const helpId = field.help ? `${field.name}-help` : undefined;
+  const errorId = `${field.name}-error`;
+  const describedBy = [helpId, error ? errorId : undefined].filter(Boolean).join(" ") || undefined;
 
   return (
     <div>
@@ -85,7 +102,8 @@ function Field({
         <select
           id={field.name}
           value={value}
-          aria-describedby={helpId}
+          aria-describedby={describedBy}
+          aria-invalid={Boolean(error)}
           onChange={(e) => onChange(e.target.value)}
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 transition-colors hover:border-slate-400 focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
@@ -110,7 +128,8 @@ function Field({
             min={field.min}
             max={field.max}
             step={field.step}
-            aria-describedby={helpId}
+            aria-describedby={describedBy}
+          aria-invalid={Boolean(error)}
             onChange={(e) => onChange(e.target.value)}
             className="tabular w-full bg-white px-3 py-2.5 text-slate-900 focus:outline-none"
           />
@@ -122,6 +141,7 @@ function Field({
         </div>
       )}
 
+      {error && <p id={errorId} className="mt-1.5 text-sm text-red-700">{error}</p>}
       {field.help ? (
         <p id={helpId} className="mt-1.5 text-xs text-slate-500">
           {field.help}

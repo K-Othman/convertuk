@@ -1,10 +1,26 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { categories, converters, type Category } from "@/lib/conversions";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: { absolute: "Free UK Calculators & Converters | ConvertUK" },
+  description: "Free UK calculators for salary after tax, contractor day rates, cups to grams and ml to tablespoons. Clear formulas, examples and instant results.",
+  alternates: { canonical: absoluteUrl("/") },
+  openGraph: {
+    title: "Free UK Calculators & Converters | ConvertUK",
+    description: "Calculate take-home hourly pay, day-rate income and kitchen conversions with instant results.",
+    url: absoluteUrl("/"),
+  },
+};
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-12 sm:py-16">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME,
+        url: absoluteUrl("/"), inLanguage: "en-GB",
+      }).replace(/</g, "\\u003c") }} />
       {/* Hero */}
       <section className="mb-14">
         <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
@@ -12,12 +28,12 @@ export default function HomePage() {
           {converters.length} live converters, more on the way
         </p>
         <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl">
-          Converters with a twist.
+          Free UK calculators & converters.
         </h1>
         <p className="mt-4 max-w-prose text-pretty text-lg leading-relaxed text-slate-600">
-          {SITE_NAME} handles the niche UK calculations a search box can&apos;t
-          answer inline — the ones that need real tax bands, real ingredient
-          densities, and a clear payoff. Every tool updates live as you type.
+          Calculate your hourly pay after tax, turn a contractor day rate into annual
+          income, or convert recipe measurements for a UK kitchen. {SITE_NAME}
+          shows the assumptions behind each result, with no sign-up required.
         </p>
       </section>
 

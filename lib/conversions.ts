@@ -115,12 +115,12 @@ function decimal(value: number, dp = 2): string {
  * Converter 1 — Salary → real hourly rate after UK tax
  *
  *  ┌─────────────────────────────────────────────────────────────────────┐
- *  │  UK 2025/26 TAX-YEAR CONSTANTS — review/update these once a year.     │
- *  │  Source: HMRC rates & thresholds for 2025/26 (England, Wales & NI).   │
+ *  │  UK 2026/27 TAX-YEAR CONSTANTS — review/update these once a year.     │
+ *  │  Source: HMRC rates & thresholds for 2026/27 (England, Wales & NI).   │
  *  └─────────────────────────────────────────────────────────────────────┘
  * ──────────────────────────────────────────────────────────────────────── */
 
-const TAX_YEAR = "2025/26";
+const TAX_YEAR = "2026/27";
 
 // Income Tax
 const PERSONAL_ALLOWANCE = 12_570; // tax-free allowance (£/yr)
@@ -180,12 +180,12 @@ const salaryToHourly: Converter = {
   slug: "salary-to-hourly-after-tax",
   category: "money",
   title: "Salary to real hourly rate (after UK tax)",
-  metaTitle: "Salary to Hourly After Tax Calculator (UK 2025/26)",
+  metaTitle: "Salary to Hourly After Tax Calculator (UK 2026/27)",
   metaDescription:
-    "Turn your UK annual salary into your real hourly rate after income tax and National Insurance. 2025/26 tax bands, personal allowance taper and employee NI built in.",
+    "Turn your UK annual salary into your real hourly rate after income tax and National Insurance. 2026/27 tax bands, personal allowance taper and employee NI built in.",
   valueLine: "What an hour of your time is really worth once HMRC has taken its cut.",
   intro:
-    "Job ads quote a salary; what you actually feel is the hourly rate that lands in your account. This tool applies the UK 2025/26 income tax bands and employee National Insurance to show what each working hour is genuinely worth after tax.",
+    "Job ads quote a salary; what you actually feel is the hourly rate that lands in your account. This tool applies the 2026/27 income tax bands for England, Wales and Northern Ireland and standard employee National Insurance to show what each working hour is genuinely worth after tax.",
   inputs: [
     {
       type: "number",
@@ -255,7 +255,7 @@ const salaryToHourly: Converter = {
   faqs: [
     {
       q: "Which tax year does this use?",
-      a: "The 2025/26 UK tax year: a £12,570 personal allowance, 20% basic, 40% higher and 45% additional rates, plus employee National Insurance of 8% between £12,570 and £50,270 and 2% above. These are clearly labelled constants in the code so they can be updated each April.",
+      a: "The 2026/27 UK tax year: a £12,570 personal allowance, 20% basic, 40% higher and 45% additional rates, plus employee National Insurance of 8% between £12,570 and £50,270 and 2% above. The tax year runs from 6 April 2026 to 5 April 2027.",
     },
     {
       q: "Does it cover Scotland?",
@@ -279,7 +279,7 @@ const salaryToHourly: Converter = {
     "The calculation mirrors how HMRC stacks the charges. Your personal allowance comes off first, then the remaining income is taxed at 20%, 40% and 45% as it climbs through the bands. Employee National Insurance is layered on top at 8% up to the upper earnings limit and 2% beyond it. Take-home is simply gross minus those two, and the real hourly rate is take-home divided by the hours and weeks you enter.",
     "Use it to sanity-check overtime, a four-day week, or a job offer in a different city. If a £5,000 raise comes with five extra hours a week, the real hourly figure will often barely move — and sometimes it falls. Seeing the after-tax number per hour makes those trade-offs obvious in a way an annual salary never does.",
   ],
-  updated: "2026-06-01",
+  updated: "2026-09-07",
 };
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -303,6 +303,7 @@ const INGREDIENTS: { value: string; label: string; density: number }[] = [
 // Millilitres per unit of volume.
 const VOLUME_UNIT_ML: Record<string, number> = {
   "us-cup": 236.588, // standard US cup
+  "metric-cup": 250,
   ml: 1,
   "uk-tbsp": 15, // UK metric tablespoon
 };
@@ -318,7 +319,7 @@ const cupsToGrams: Converter = {
     "Convert US cups, millilitres or UK tablespoons to grams for flour, sugar, butter, honey and more. Per-ingredient densities mean a cup of flour and a cup of honey give different weights.",
   valueLine: "A cup of flour and a cup of honey weigh very different things — convert by ingredient.",
   intro:
-    "A 'cup' is a measure of volume, but UK recipes and kitchen scales work in grams. Because ingredients have different densities, this converter uses a per-ingredient density to turn US cups, millilitres or UK tablespoons into an accurate gram weight.",
+    "A 'cup' is a measure of volume, but UK recipes and kitchen scales work in grams. Because ingredients have different densities, this converter uses a per-ingredient density to turn US cups, millilitres or UK tablespoons into an estimated gram weight.",
   inputs: [
     {
       type: "number",
@@ -335,6 +336,7 @@ const cupsToGrams: Converter = {
       default: "us-cup",
       options: [
         { value: "us-cup", label: "US cups (236.588 ml)" },
+        { value: "metric-cup", label: "Metric cups (250 ml)" },
         { value: "ml", label: "Millilitres" },
         { value: "uk-tbsp", label: "UK tablespoons (15 ml)" },
       ],
@@ -375,11 +377,11 @@ const cupsToGrams: Converter = {
     },
     {
       q: "Are these US cups or UK cups?",
-      a: "US cups, at 236.588 ml each — the size assumed by almost all online recipes. A traditional UK 'breakfast cup' is roughly 284 ml, so if a vintage British recipe specifies cups, expect slightly larger quantities.",
+      a: "Choose US cups (236.588 ml, the default) or metric cups (250 ml). Check which measure the recipe uses. A traditional imperial cup is approximately 284 ml and is not one of this tool's cup presets.",
     },
     {
       q: "How accurate are the densities?",
-      a: "They're solid kitchen averages, accurate to within a few percent for everyday baking. Real flour varies with how tightly it's packed and how humid your kitchen is, so for bread and pastry a £10 set of digital scales will always beat any cup measure.",
+      a: "These are approximate density assumptions, not laboratory measurements or a guaranteed tolerance. Packing, brand and moisture affect the result. Use the recipe author's gram weights when available, and weigh ingredients for repeatable baking.",
     },
     {
       q: "Should I spoon or scoop my flour?",
@@ -391,7 +393,7 @@ const cupsToGrams: Converter = {
     "This tool does exactly that. It first turns your amount into millilitres (a US cup is 236.588 ml, a UK metric tablespoon is 15 ml), then multiplies by the ingredient's density in grams per millilitre. A cup of cocoa powder, which is light and airy, comes out near 97 g, while the same cup of honey lands well over 300 g. The gram figure is the one to trust when you reach for the scales.",
     "Keep in mind that baking rewards weighing over measuring. Cups are quick, but two cooks can scoop the same flour and be 20% apart. If a recipe matters — a birthday cake, a first loaf — convert to grams here, weigh it out, and you remove the biggest source of variation in the whole bake.",
   ],
-  updated: "2026-06-01",
+  updated: "2026-09-07",
 };
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -424,7 +426,7 @@ const SOCIAL_FORMATS: {
     label: "Instagram portrait post",
     size: "1080 × 1350 px",
     ratio: "4:5",
-    tip: "The tallest shape the feed allows, so it claims the most screen space. Keep essential detail away from the very bottom where the caption and icons begin.",
+    tip: "A common portrait export preset. This is not a statement of the platform's maximum supported ratio. Preview the feed and profile crops before publishing.",
   },
   {
     value: "story",
@@ -450,7 +452,7 @@ const SOCIAL_FORMATS: {
   {
     value: "yt-thumb",
     label: "YouTube thumbnail",
-    size: "1280 × 720 px",
+    size: "3840 × 2160 px",
     ratio: "16:9",
     tip: "The duration stamp covers the bottom-right corner. Use large, high-contrast text — most viewers first see this at roughly 210 × 118 px on mobile.",
   },
@@ -476,8 +478,8 @@ const socialSizeChecker: Converter = {
   title: "Social media image & video size checker",
   metaTitle: "Social Media Size Checker — Reels, Stories, Thumbnails",
   metaDescription:
-    "Pick a platform and format to get the recommended pixel size, aspect ratio and a safe-zone tip so your text and logo never get cropped by the app's interface.",
-  valueLine: "The exact pixel size and the safe zone where the app's buttons won't cover your text.",
+    "Pick a platform and format to get the recommended pixel size, aspect ratio and a safe-zone tip with suggested margins to help you plan your layout. Preview in the app before posting.",
+  valueLine: "Export-size presets and layout tips for checking your post before publishing.",
   intro:
     "Every platform crops differently and lays its own buttons over your content. Choose a format below to get the recommended export size, the aspect ratio, and where the 'safe zone' is so your message survives the interface.",
   inputs: [
@@ -500,11 +502,11 @@ const socialSizeChecker: Converter = {
   faqs: [
     {
       q: "What is a 'safe zone'?",
-      a: "It's the part of your frame that the app's own interface never covers. Buttons, captions, profile rings and progress bars all sit on top of your content, so anything important — text, faces, logos, a call-to-action — needs to stay inside the safe zone to avoid being hidden.",
+      a: "It's an area you leave clear of likely interface overlays. No fixed margin is guaranteed across devices and app updates. Buttons, captions, profile rings and progress bars all sit on top of your content, so anything important — text, faces, logos, a call-to-action — needs to stay inside the safe zone to avoid being hidden.",
     },
     {
       q: "Why 1080 × 1920 for almost every vertical video?",
-      a: "It's the 9:16 full-screen ratio of a phone and the resolution every major app re-encodes to. Exporting at 1080 × 1920 means the platform does the least re-compression, which keeps your video looking crisp instead of blocky.",
+      a: "1080 × 1920 is a common 9:16 export preset. Supported sizes and compression depend on the platform and upload settings; this preset does not guarantee a particular quality.",
     },
     {
       q: "Can I just upload a bigger image and let the app resize it?",
@@ -518,9 +520,9 @@ const socialSizeChecker: Converter = {
   body: [
     "The fastest way to look amateur on social media is to have your caption clipped by the platform's own buttons. Each app reserves slices of the screen for its interface — TikTok's action rail down the right, Instagram's reply bar across the bottom of a Story, YouTube's duration stamp in the thumbnail corner — and those slices change depending on the format. Designing to the raw canvas size isn't enough; you have to design to the part that stays visible.",
     "This checker gives you both numbers that matter: the export size to hand your design tool, and a plain-English note on where the safe zone sits for that specific format. Build to the recommended pixels, then keep your text, logo and key subject inside the safe area, and your post will read correctly whether it's seen on a tiny phone or a desktop preview.",
-    "If you only remember one rule, make it this: centre the things that must be seen, and leave breathing room top and bottom on anything vertical. The middle of the frame is almost never covered, so a headline parked dead-centre survives every crop the algorithms throw at it.",
+    "If you only remember one rule, make it this: centre the things that must be seen, and leave breathing room top and bottom on anything vertical. The middle of the frame is almost never covered, so a headline parked dead-centre is easier to keep visible; check the actual preview before posting.",
   ],
-  updated: "2026-06-01",
+  updated: "2026-09-07",
 };
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -535,12 +537,12 @@ const mlToUkTablespoons: Converter = {
   slug: "ml-to-uk-tablespoons",
   category: "cooking",
   title: "Millilitres to UK tablespoons",
-  metaTitle: "ml to UK Tablespoons Converter (15 ml spoons)",
+  metaTitle: "ml to Tablespoons UK | 15 ml = 1 tbsp",
   metaDescription:
-    "Convert millilitres to UK tablespoons, teaspoons and fluid ounces. Uses the British metric standard of a 15 ml tablespoon and 5 ml teaspoon — not the 14.8 ml US spoon.",
+    "15 ml is 1 UK tablespoon or 3 teaspoons. Convert any ml amount to 15 ml tablespoons, with a quick table for 5, 10, 15, 30, 50 and 100 ml.",
   valueLine: "Millilitres into the 15 ml British spoon — not the 14.8 ml American one.",
   intro:
-    "Lost your measuring jug? This converts any millilitre amount into UK tablespoons and teaspoons using the British metric standard — a 15 ml tablespoon and a 5 ml teaspoon — so a recipe written in ml can be measured with the spoons in your drawer.",
+    "Lost your measuring jug? This converts any millilitre amount into UK tablespoons and teaspoons using the British metric standard — a 15 ml tablespoon and a 5 ml teaspoon — so a recipe written in ml can be measured with a marked measuring-spoon set. Ordinary cutlery varies in size.",
   inputs: [
     {
       type: "number",
@@ -576,7 +578,7 @@ const mlToUkTablespoons: Converter = {
     },
     {
       q: "How is that different from an American tablespoon?",
-      a: "A US tablespoon is about 14.8 ml and a US teaspoon roughly 4.93 ml — close, but not identical. Over several spoonfuls the difference adds up, and for the old Australian 20 ml tablespoon it's larger still, so it pays to know which standard a recipe assumes.",
+      a: "A US tablespoon is about 14.8 ml and a US teaspoon roughly 4.93 ml — close, but not identical. Over several spoonfuls the difference adds up, and for the Australian 20 ml tablespoon it's larger still, so it pays to know which standard a recipe assumes.",
     },
     {
       q: "Why are the fluid ounces 'UK'?",
@@ -589,10 +591,10 @@ const mlToUkTablespoons: Converter = {
   ],
   body: [
     "Spoon measures feel old-fashioned until the moment your measuring jug is in the dishwasher and a recipe asks for 45 ml of something. Knowing that a UK tablespoon holds 15 ml turns that into a clean three spoonfuls, no jug required. This converter does the division for you and adds teaspoons and fluid ounces so you can use whatever's nearest to hand.",
-    "The important detail is the standard. Britain settled on a neat metric spoon — 15 ml for a tablespoon, 5 ml for a teaspoon — so the numbers stay tidy: 30 ml is two tablespoons, 5 ml is a single teaspoon. American spoons run a fraction smaller and the old Australian tablespoon was a full 20 ml, which is exactly the kind of mismatch that throws a recipe off when it's scaled up.",
+    "The important detail is the standard. Britain settled on a neat metric spoon — 15 ml for a tablespoon, 5 ml for a teaspoon — so the numbers stay tidy: 30 ml is two tablespoons, 5 ml is a single teaspoon. American spoons run a fraction smaller and the Australian tablespoon is 20 ml, which is exactly the kind of mismatch that throws a recipe off when it's scaled up.",
     "For liquids — milk, oil, vanilla, syrup — spoons are perfectly reliable, and this tool gets you there quickly. For dry baking staples like flour and sugar, reach for the scales instead: weight beats volume every time once you're past a spoonful or two.",
   ],
-  updated: "2026-06-01",
+  updated: "2026-09-07",
 };
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -602,10 +604,10 @@ const mlToUkTablespoons: Converter = {
 const dayRateToSalary: Converter = {
   slug: "day-rate-to-salary",
   category: "money",
-  title: "Day rate to annual salary",
-  metaTitle: "Day Rate to Salary Calculator (UK Contractors)",
+  title: "Day rate to salary calculator (UK)",
+  metaTitle: "Day Rate to Salary Calculator UK | Annual & Monthly",
   metaDescription:
-    "Convert a contractor or freelancer day rate into gross annual billings, monthly and weekly income and an equivalent salary — based on realistic billable days, not all 260 weekdays.",
+    "Convert your UK day rate to annual, monthly and weekly gross income. Choose your billable days and compare £300, £400 or £500 per day with worked examples.",
   valueLine: "Turn a day rate into real annual billings — using billable days, not the 260 on the calendar.",
   intro:
     "A day rate looks great until you multiply it out — and most people multiply it wrong. There aren't 260 paid days in a freelancer's year once holiday, admin and gaps between contracts are removed. Enter your rate and realistic billable days to see what it actually adds up to.",
@@ -649,20 +651,20 @@ const dayRateToSalary: Converter = {
       { label: "Per month (gross)", value: money(monthly) },
       { label: "Per week (gross)", value: money(weekly) },
       {
-        label: "Equivalent gross salary",
+        label: "Annual income before costs",
         value: money(annual),
-        hint: "Before employer pension, holiday & benefits — see the FAQ",
+        hint: "Gross billings, not an equivalent employment package",
       },
     ];
   },
   faqs: [
     {
       q: "Why not just multiply my day rate by 260 weekdays?",
-      a: "Because nobody bills all 260. Take off statutory holiday and a couple of weeks of personal leave (around 28 days), bank holidays (8), the odd sick day, plus time spent on admin, invoicing, sales and the gaps between contracts, and a realistic year is closer to 200–230 billable days. Using 260 overstates your income by a fifth or more.",
+      a: "260 is a simple 52-week × 5-day baseline, not a promise of paid work. Subtract the days you expect not to invoice: holidays, sickness, admin and gaps between contracts. Avoid counting bank holidays twice if they are already included in your holiday allowance. Self-employed billable days depend on your contracts.",
     },
     {
       q: "Where does the default of 220 come from?",
-      a: "It's a widely-used planning figure: roughly 232 working days after holiday and bank holidays, minus a small allowance for sickness and non-billable admin. Adjust it to match your own pipeline — a fully-booked contractor might hit 230+, while someone building a client base may bill 180 or fewer.",
+      a: "220 is an illustrative assumption: 260 weekdays minus 28 days off and 12 other non-billable days. It is not a statutory entitlement or a forecast. Enter your own expected paid days.",
     },
     {
       q: "Is the day rate the same as a salary?",
@@ -674,15 +676,15 @@ const dayRateToSalary: Converter = {
     },
     {
       q: "How do I turn billings into a comparable salary?",
-      a: "As a rough rule, knock 20–30% off your gross billings to reflect the pension, paid holiday and job security a permanent role includes — then compare that to advertised salaries. If you want to match a £60,000 salaried package, you generally need to bill noticeably more than £60,000.",
+      a: "There is no universal percentage. Start with expected billings, then estimate business costs and the benefits you would need to replace, including employer pension contributions. Compare tax and employment arrangements separately. This calculator does not value those differences.",
     },
   ],
   body: [
     "The leap from a day rate to 'so what do I earn?' trips up almost every new contractor. Four hundred pounds a day sounds like £104,000 a year if you multiply by 260 weekdays — but that figure assumes you never take a holiday, never get sick, never spend a day chasing the next contract and never have a quiet month. Strip those out and the honest number is the one that matters when you're planning a mortgage or deciding whether to go freelance at all.",
-    "This calculator multiplies your rate by realistic billable days rather than the full calendar. The default of 220 already removes statutory and personal holiday, bank holidays and a margin for admin and downtime; nudge it up if you're consistently booked or down if your pipeline is lumpy. The headline is your gross annual billings, with the monthly and weekly equivalents underneath for budgeting.",
-    "Finally, resist comparing gross billings directly to a permanent salary. A salaried role bundles in employer pension contributions, paid holiday, sick pay and stability that your billings have to cover themselves. A useful habit is to discount your billings by 20–30% before holding them up against an advertised salary — that's the closest you'll get to a fair, like-for-like comparison.",
+    "This calculator multiplies your rate by realistic billable days rather than the full calendar. The default of 220 is an example allowance for holidays and other non-billable days; nudge it up if you're consistently booked or down if your pipeline is lumpy. The headline is your gross annual billings, with the monthly and weekly equivalents underneath for budgeting.",
+    "Finally, resist comparing gross billings directly to a permanent salary. A salaried role bundles in employer pension contributions, paid holiday, sick pay and stability that your billings have to cover themselves. List and value those costs individually before comparing an offer. A fixed percentage discount cannot make the two arrangements equivalent.",
   ],
-  updated: "2026-06-01",
+  updated: "2026-09-07",
 };
 
 /* ────────────────────────────────────────────────────────────────────────

@@ -13,7 +13,7 @@ export const SITE_URL = "https://www.convertuk.co.uk";
 export const SITE_NAME = "ConvertUK";
 
 /** Short tagline used in default metadata and the header. */
-export const SITE_TAGLINE = "UK converters with a twist";
+export const SITE_TAGLINE = "Free UK calculators & converters";
 
 /** Build an absolute URL for a given path (path may start with or without "/"). */
 export function absoluteUrl(path = "/"): string {

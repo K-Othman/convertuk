@@ -8,6 +8,7 @@ import {
   relatedConverters,
 } from "@/lib/conversions";
 import { absoluteUrl } from "@/lib/site";
+import { getGuide } from "@/lib/guides";
 import ConverterTool from "./ConverterTool";
 
 type PageProps = { params: { slug: string } };
@@ -44,11 +45,12 @@ export default function ConverterPage({ params }: PageProps) {
 
   const category = categories.find((c) => c.id === converter.category);
   const related = relatedConverters(converter.slug);
+  const guide = getGuide(converter.slug);
   const updated = new Intl.DateTimeFormat("en-GB", {
     dateStyle: "long",
   }).format(new Date(converter.updated));
 
-  // FAQPage structured data for rich snippets.
+  // Matches the visible FAQs; rich-result eligibility is determined by Google.
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -64,9 +66,21 @@ export default function ConverterPage({ params }: PageProps) {
       {/* JSON-LD: rendered into the DOM for crawlers, invisible to users. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([faqJsonLd, {
+          "@context": "https://schema.org", "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "All calculators", item: absoluteUrl("/") },
+            { "@type": "ListItem", position: 2, name: converter.title, item: absoluteUrl(`/${converter.slug}`) },
+          ],
+        }, {
+          "@context": "https://schema.org", "@type": "WebApplication",
+          name: converter.title, url: absoluteUrl(`/${converter.slug}`),
+          description: converter.metaDescription, applicationCategory: "UtilitiesApplication",
+          operatingSystem: "Any", isAccessibleForFree: true, inLanguage: "en-GB",
+        }]).replace(/</g, "\\u003c") }}
       />
 
+      <nav aria-label="Breadcrumb" className="mb-5 text-sm text-slate-500"><Link href="/" className="underline">All calculators</Link><span aria-hidden="true"> / </span><span>{converter.title}</span></nav>
       <header className="mb-7">
         {category ? (
           <Link
@@ -89,8 +103,23 @@ export default function ConverterPage({ params }: PageProps) {
         <ConverterTool slug={converter.slug} />
       </section>
 
+      {guide && <section aria-labelledby="reference-heading" className="mb-12 space-y-4">
+        <h2 id="reference-heading" className="text-xl font-semibold text-ink">{guide.heading}</h2>
+        <p className="leading-relaxed text-slate-700">{guide.summary}</p>
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-left text-sm">
+            <caption className="sr-only">{guide.heading}</caption>
+            <thead className="bg-slate-100"><tr>{guide.columns.map(label => <th key={label} scope="col" className="px-4 py-3 font-semibold">{label}</th>)}</tr></thead>
+            <tbody className="divide-y divide-slate-200 bg-white">{guide.rows.map(row => <tr key={row[0]}>{row.map((cell, i) => i === 0 ? <th key={i} scope="row" className="px-4 py-3 font-medium">{cell}</th> : <td key={i} className="px-4 py-3 tabular-nums">{cell}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
+        <p className="text-sm leading-relaxed text-slate-600">{guide.note}</p>
+        <Link href="/about" className="inline-block text-sm text-accent underline">Sources, assumptions & calculation methods</Link>
+      </section>}
+
       {/* Long-form body copy */}
       <section className="mb-12 max-w-prose space-y-4">
+        <h2 className="text-xl font-semibold text-ink">How to use this result</h2>
         {converter.body.map((paragraph, i) => (
           <p
             key={i}

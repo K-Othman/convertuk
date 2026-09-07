@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description:
-    "A growing set of UK converters with a twist — niche calculations a search box can't answer inline, from real after-tax hourly pay to cups-to-grams by ingredient.",
+    "Free UK calculators for after-tax hourly pay, contractor day rates and kitchen conversions, with formulas and worked examples.",
   applicationName: SITE_NAME,
   openGraph: {
     type: "website",
@@ -103,6 +103,7 @@ export default function RootLayout({
               only and use the tax-year constants noted on each page — always
               check official sources before making financial decisions.
             </p>
+            <p className="mt-4"><Link href="/about" className="underline underline-offset-4 hover:text-accent">About ConvertUK & calculation methods</Link></p>
             <p className="mt-4 text-xs text-slate-400">
               © {new Date().getFullYear()} {SITE_NAME}. All converters update
               live as you type.
@@ -110,8 +111,8 @@ export default function RootLayout({
           </div>
         </footer>
 
-        {/* GA4 — only loads in production-style builds; safe to leave in for now. */}
-        <GoogleAnalytics gaId="G-ZNLHNVTTS7" />
+        {/* Keep local checks and preview deployments out of production reports. */}
+        {process.env.VERCEL_ENV === "production" && <GoogleAnalytics gaId="G-ZNLHNVTTS7" />}
       </body>
     </html>
   );

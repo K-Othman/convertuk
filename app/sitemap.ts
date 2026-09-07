@@ -6,7 +6,7 @@ import { absoluteUrl } from "@/lib/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const home: MetadataRoute.Sitemap[number] = {
     url: absoluteUrl("/"),
-    lastModified: new Date(),
+    lastModified: new Date("2026-09-07"),
     changeFrequency: "weekly",
     priority: 1,
   };
@@ -21,5 +21,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [home, ...pages];
+  return [home, ...pages, { url: absoluteUrl("/about"), lastModified: new Date("2026-09-07") }];
 }

@@ -1,4 +1,4 @@
-# Unitwist — UK converters with a twist
+# ConvertUK — free UK calculators and converters
 
 A config-driven collection of niche UK converters — the calculations a search
 box can't answer inline (real after-tax hourly pay, cups-to-grams by ingredient,
@@ -85,7 +85,7 @@ the dark "display". Use `hint` for the small print under a line.
 
 The public base URL lives in exactly one place:
 [`lib/site.ts`](lib/site.ts) → `SITE_URL`. It's currently
-`https://placeholder.example.com`. Change that single constant once the domain
+`https://www.convertuk.co.uk`. Change that single constant once the domain
 is finalised and canonical tags, OpenGraph URLs, the sitemap and robots.txt all
 update together.
 
@@ -102,3 +102,13 @@ bumped at the same time.
 Push to a Git provider and import the repo into Vercel — no configuration
 needed. Everything renders statically at build time, so it deploys to the edge
 and serves instantly.
+
+## SEO and content checks
+
+Run `npm test` for calculator boundary and input-validation checks, then `npm run build` for static generation, lint and TypeScript checks. Review generated HTML for canonical URLs, unique titles, headings, reference tables and structured data.
+
+`lib/guides.ts` produces visible reference tables from the same calculator functions. The About page documents sources and limitations. Update content dates only when the relevant content changes. Review salary assumptions every April; the current model covers 2026/27 England, Wales and Northern Ireland.
+
+Analytics loads only when Vercel sets `VERCEL_ENV=production`. For another host, explicitly configure that environment variable or adapt the guard. `calculator_use` fires once per mounted calculator after a valid interaction on the public www hostname. It sends only the calculator slug, never the input values. Existing GA4 automatic page and form measurement settings should be reviewed separately in Analytics.
+
+After deployment, inspect the homepage and changed tools in Search Console and request indexing of their canonical www URLs. The canonical sitemap is https://www.convertuk.co.uk/sitemap.xml. Redirected non-www URLs are expected to be excluded from the index; do not remove their redirects to make that report green.
